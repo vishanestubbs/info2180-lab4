@@ -1,5 +1,8 @@
 <?php
-header("Access-Control-Allow-Origin: *");
+
+header("Access-Control-Allow-Origin: *");  // Allow all origins
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");  // Allow these HTTP methods
+header("Access-Control-Allow-Headers: Content-Type");  // Allow specific headers (if needed)
 $superheroes = [
   [
       "id" => 1,
@@ -65,9 +68,54 @@ $superheroes = [
 
 ?>
 
+<?php function noCriteria(){
+    ?>
 <ul>
-<?php foreach ($superheroes as $superhero): ?>
+<?php foreach ($GLOBALS['superheroes'] as $superhero): ?>
   <li><?= $superhero['alias']; ?></li>
-<?php endforeach; ?>
-</ul>
+<?php endforeach; 
+ ?>
+</ul> 
+<?php
+}
+?>
+
+ 
+<?php 
+function findinfo($info){
+
+// Sanitize input to prevent XSS
+$info = htmlspecialchars($info, ENT_QUOTES, 'UTF-8');
+
+// Validate input (e.g., allowing only letters and spaces for superhero names)
+    if (!preg_match("/^[a-zA-Z ]*$/", $info)) {
+        echo "Invalid input";
+        exit; // Stop further processing if input is invalid
+}
+    $flag= false;
+    if ($info==""){
+        $flag=true;
+        noCriteria();
+
+    } else{
+        foreach($GLOBALS['superheroes'] as $superhero){
+            if ($info==$superhero['name'] or $info==$superhero['alias']){ ?>
+                <h3><?= strtoupper($superhero['alias']);?> </h3>
+                <h4><?='A.K.A '.strtoupper( $superhero['name']);?> </h4>
+                <p><?= $superhero['biography'];?></p>
+                <?php
+                $flag=true;
+                break;
+            }
+        
+    }
+    }
+    if (!$flag) { ?>
+        <strong>SUPERHERO NOT FOUND</strong> <?php
+    }
+    
+} 
+
+$search= $_GET['search'];
+findinfo($search);
 
