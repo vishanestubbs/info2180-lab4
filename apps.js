@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const input = document.getElementById("Search");
 
     button.addEventListener("click", function () {
-        const value = input.value // Get the input value
+        const value = input.value.trim() // Get the input value
         fetch(`http://localhost:8888/info2180-lab4/superheroes.php?search=${encodeURIComponent(value)}`)
             .then(response => response.text())
             .then(data => results.innerHTML = data)  // Display the results in the result div
